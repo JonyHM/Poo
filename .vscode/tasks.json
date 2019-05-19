@@ -1,0 +1,31 @@
+{
+   "version": "2.0.0",
+   "tasks": [
+      {
+         "label": "Rodar cliente",
+         "type": "shell",
+         "command": "java F:\\3º_Periodo\\POO\\Chat_IRC\\src\\Client.java ${input:ipHost porta}",
+         "problemMatcher": []
+      },
+      {
+         "label": "Rodar servidor",
+         "type": "shell",
+         "command": "java F:\\3º_Periodo\\POO\\Chat_IRC\\src\\Server.java ${input:porta}",
+         "problemMatcher": []
+      },
+   ],
+   "inputs": [
+      {
+         "id": "ipHost",
+         "description": "Ip do host a ser executado:",
+         "default": "127.0.0.1",
+         "type": "promptString"
+      },
+      {
+         "id": "porta",
+         "description": "Porta a ser executada:",
+         "default": "8080",
+         "type": "promptString"
+      },
+   ]
+}
