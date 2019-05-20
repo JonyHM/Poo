@@ -12,7 +12,6 @@ public class ChatServerThread extends Thread {
 	private int ID = -1;
 	private DataInputStream streamIn = null;
 	private DataOutputStream streamOut = null;
-	private String nick;
 
 	public ChatServerThread(Server _server, Socket _socket) {
 		super();
@@ -26,7 +25,7 @@ public class ChatServerThread extends Thread {
 			streamOut.writeUTF(msg);
 			streamOut.flush();
 		} catch (IOException ioe) {
-			System.out.println(ID + " ERROR sending: " + ioe.getMessage());
+			System.out.println(ID + " Erro ao ler: " + ioe.getMessage());
 			server.remove(ID);
 			server = null;
 		}
@@ -36,17 +35,13 @@ public class ChatServerThread extends Thread {
 		return ID;
 	}
 	
-	public String getNick() {
-		return nick;
-	}
-
 	public void run() {
 		System.out.println("Thread do servidor " + ID + " em execução.");
 		while (true) {
 			try {
 				// passar o nick do cliente - flag isNick ativada 
 				//manda o nick para ser armazenado, caso contrário é so msg
-				server.handle(nick, ID, streamIn.readUTF());
+				server.handle(ID, streamIn.readUTF());
 			} catch (IOException ioe) {
 				System.out.println(ID + " ERROR reading: " + ioe.getMessage());
 				server.remove(ID);

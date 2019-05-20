@@ -46,15 +46,6 @@ public class Server implements Runnable {
 			thread = null;
 		}
 	}
-	
-	@SuppressWarnings("unused")
-	private int findClient(String nick) {
-		for (int i = 0; i < clientCount; i++) 
-			if (clients.get(i).getNick() == nick)
-				return i;
-		
-		return -1;
-	}
 
 	private int findClient(int ID) {
 		for (int i = 0; i < clientCount; i++)
@@ -63,14 +54,14 @@ public class Server implements Runnable {
 		return -1;
 	}
 
-	public synchronized void handle(String nick, int ID, String input) {
+	public synchronized void handle(int ID, String input) {
 		if (input.equals(".sair")) {
 			clients.get(findClient(ID)).send(".sair");
 			remove(ID);
 		} else {
 			for (int i = 0; i < clientCount; i++)
 				//ID deve ser nick instead
-				clients.get(i).send(nick + ": " + input);
+				clients.get(i).send(input);
 		}
 	}
 
@@ -79,7 +70,7 @@ public class Server implements Runnable {
 		if (pos >= 0) {
 			ChatServerThread toTerminate = clients.get(pos);
 			// adicionar o nick + nick + (String nick)
-			System.out.println("Removendo thread do cliente cliente" + ID 
+			System.out.println("Removendo thread do cliente " + ID 
 					+ " na posição " + pos);
 			
 			// Se a posição a ser removida for menor que a última da lista,

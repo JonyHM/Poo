@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.Socket;
 import java.net.UnknownHostException;
+import java.util.Scanner;
 
 public class Client implements Runnable {
 
@@ -12,8 +13,12 @@ public class Client implements Runnable {
 	private DataOutputStream streamOut = null;
 	private ChatClientThread client = null;
 	private BufferedReader bReader = null;
+	private String nick;
+	private String[] mensagem;
 
-	public Client(String serverName, int serverPort) {
+	public Client(String serverName, int serverPort, String _nick) {
+		nick = _nick;
+		
 		System.out.println("Estabelecendo conexão. Aguarde, por favor...");
 		try {
 			socket = new Socket(serverName, serverPort);
@@ -30,7 +35,7 @@ public class Client implements Runnable {
 	public void run() {
 		while (thread != null) {
 			try {
-				streamOut.writeUTF(bReader.readLine());
+				streamOut.writeUTF(nick + ";" + bReader.readLine());
 				streamOut.flush();
 			} catch (IOException ioe) {
 				System.out.println("Erro de envio: " + ioe.getMessage());
@@ -44,7 +49,8 @@ public class Client implements Runnable {
 			System.out.println("Saindo. Pressione qualquer tecla para sair...");
 			stop();
 		} else
-			System.out.println(msg);
+			mensagem  = msg.split(";");
+			System.out.println(mensagem[0] + ": " + mensagem[1]);
 	}
 
 	public void start() throws IOException {
@@ -77,13 +83,19 @@ public class Client implements Runnable {
 		System.exit(0);
 	}
 
-	@SuppressWarnings("unused")
+	@SuppressWarnings({ "unused", "resource" })
 	public static void main(String args[]) {
+		Scanner scan = new Scanner(System.in);
 		Client client = null;
+		
+		System.out.print("Insira um apelido para entrar: ");
+		String nick = scan.nextLine();
+		
 		if (args.length != 2)
-			System.out.println("Modo de uso: java Client.java IpDoHost porta");
+			System.out.println("Modo de uso: java Client.java apelido porta");
 		else
-			client = new Client(args[0], Integer.parseInt(args[1]));
+			client = new Client(args[0], Integer.parseInt(args[1]), nick);
+		
 	}
 }
 
