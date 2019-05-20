@@ -1,7 +1,9 @@
+package br.com.fatec.chat;
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.net.InetAddress;
 import java.net.Socket;
 import java.net.UnknownHostException;
 import java.util.Scanner;
@@ -15,13 +17,14 @@ public class Client implements Runnable {
 	private BufferedReader bReader = null;
 	private String nick;
 	private String[] mensagem;
+	private String enviar;
 
-	public Client(String serverName, int serverPort, String _nick) {
+	public Client(InetAddress IP, int serverPort, String _nick) throws UnknownHostException {
 		nick = _nick;
 		
-		System.out.println("Estabelecendo conex�o. Aguarde, por favor...");
+		System.out.println("Estabelecendo conex�o. Aguarde, por favor...");
 		try {
-			socket = new Socket(serverName, serverPort);
+			socket = new Socket(IP, serverPort);
 			System.out.println("Conectado: " + socket);
 			System.out.println("Digite .sair para sair");
 			start();
@@ -35,21 +38,29 @@ public class Client implements Runnable {
 	public void run() {
 		while (thread != null) {
 			try {
-				streamOut.writeUTF(nick + ";" + bReader.readLine());
+				enviar = Cripto.encriptar(bReader.readLine());
+				streamOut.writeUTF(nick + ";" + enviar);
 				streamOut.flush();
 			} catch (IOException ioe) {
 				System.out.println("Erro de envio: " + ioe.getMessage());
-				stop();
+				this.stop();
 			}
 		}
 	}
 
 	public void handle(String msg) {
-		if (msg.equals(".sair")) {
-			System.out.println("Saindo. Pressione qualquer tecla para sair...");
-			stop();
+		mensagem  = msg.split(";");		
+		mensagem[1] = Cripto.decriptar(mensagem[1]);
+				
+		if (mensagem[1].equals(".sair")) {
+			if(mensagem[0] == nick) {
+				System.out.println("Saindo. Pressione qualquer tecla para sair...");
+				this.stop();
+			}
 		} else
 			mensagem  = msg.split(";");
+			mensagem[1] = Cripto.decriptar(mensagem[1]);
+			
 			int index = mensagem[1].indexOf("@");
 			
 			if(index == 0) {
@@ -82,6 +93,8 @@ public class Client implements Runnable {
 				streamOut.close();
 			if (socket != null)
 				socket.close();
+		
+			System.out.println("\nChat encerrado\n");
 		} catch (IOException ioe) {
 			System.out.println("Erro ao encerrar...");
 		}
@@ -90,31 +103,21 @@ public class Client implements Runnable {
 		
 		System.exit(0);
 	}
-
+	
 	@SuppressWarnings({ "unused", "resource" })
-	public static void main(String args[]) {
+	public static void main(String args[]) throws NumberFormatException, UnknownHostException {
 		Scanner scan = new Scanner(System.in);
 		Client client = null;
 		
-		System.out.print("Insira um apelido para entrar: ");
-		String nick = scan.nextLine();
 		
 		if (args.length != 2)
-			System.out.println("Modo de uso: java Client.java apelido porta");
-		else
-			client = new Client(args[0], Integer.parseInt(args[1]), nick);
+			System.out.println("Modo de uso: java -jar Client.jar IP porta");
+		
+		else {
+			System.out.print("Insira um apelido para entrar: ");
+			String nick = scan.nextLine();
+			client = new Client(InetAddress.getByName(args[0]), Integer.parseInt(args[1]), nick);
+		}
 		
 	}
 }
-
-
-
-/**
- * To Do:
- * 
- * @apelido mensagem
- * - Definir nick no contrutor das threads
- * - escolher nick nos mains e chamar as threads informando o nick. 
- * - ID das threads será o nick
- * - Tradução de tudo
- */

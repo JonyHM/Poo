@@ -1,3 +1,4 @@
+package br.com.fatec.chat;
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.DataInputStream;
