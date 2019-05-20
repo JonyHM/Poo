@@ -25,7 +25,7 @@ public class ChatServerThread extends Thread {
 			streamOut.writeUTF(msg);
 			streamOut.flush();
 		} catch (IOException ioe) {
-			System.out.println(ID + " Erro ao ler: " + ioe.getMessage());
+			System.out.println(ID + " Erro de leitura: " + ioe.getMessage());
 			server.remove(ID);
 			server = null;
 		}
@@ -39,11 +39,9 @@ public class ChatServerThread extends Thread {
 		System.out.println("Thread do servidor " + ID + " em execução.");
 		while (true) {
 			try {
-				// passar o nick do cliente - flag isNick ativada 
-				//manda o nick para ser armazenado, caso contrário é so msg
 				server.handle(ID, streamIn.readUTF());
 			} catch (IOException ioe) {
-				System.out.println(ID + " ERROR reading: " + ioe.getMessage());
+				System.out.println(ID + " Erro de leitura: " + ioe.getMessage());
 				server.remove(ID);
 				server = null;
 			}

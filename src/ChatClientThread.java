@@ -19,7 +19,7 @@ public class ChatClientThread extends Thread {
 		try {
 			streamIn = new DataInputStream(socket.getInputStream());
 		} catch (IOException ioe) {
-			System.out.println("Error getting input stream: " + ioe);
+			System.out.println("Erro ao receber dados do servidor: " + ioe);
 			client.stop();
 		}
 	}
@@ -29,7 +29,7 @@ public class ChatClientThread extends Thread {
 			if (streamIn != null)
 				streamIn.close();
 		} catch (IOException ioe) {
-			System.out.println("Error closing input stream: " + ioe);
+			System.out.println("Erro ao encerrar a conexão com o serviço de mensagens: " + ioe);
 		}
 	}
 
@@ -38,7 +38,7 @@ public class ChatClientThread extends Thread {
 			try {
 				client.handle(streamIn.readUTF());
 			} catch (IOException ioe) {
-				System.out.println("Listening error: " + ioe.getMessage());
+				System.out.println("Erro de escuta: " + ioe.getMessage());
 				client.stop();
 			}
 		}

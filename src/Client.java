@@ -50,7 +50,15 @@ public class Client implements Runnable {
 			stop();
 		} else
 			mensagem  = msg.split(";");
-			System.out.println(mensagem[0] + ": " + mensagem[1]);
+			int index = mensagem[1].indexOf("@");
+			
+			if(index == 0) {
+				if(mensagem[1].indexOf(nick) >= 0) {
+					System.out.println(mensagem[0] + ": " + mensagem[1]);
+				}
+			} else {
+				System.out.println(mensagem[0] + ": " + mensagem[1]);
+			}
 	}
 
 	public void start() throws IOException {
@@ -103,6 +111,8 @@ public class Client implements Runnable {
 
 /**
  * To Do:
+ * 
+ * @apelido mensagem
  * - Definir nick no contrutor das threads
  * - escolher nick nos mains e chamar as threads informando o nick. 
  * - ID das threads será o nick

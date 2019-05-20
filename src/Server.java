@@ -60,7 +60,6 @@ public class Server implements Runnable {
 			remove(ID);
 		} else {
 			for (int i = 0; i < clientCount; i++)
-				//ID deve ser nick instead
 				clients.get(i).send(input);
 		}
 	}
@@ -69,7 +68,6 @@ public class Server implements Runnable {
 		int pos = findClient(ID);
 		if (pos >= 0) {
 			ChatServerThread toTerminate = clients.get(pos);
-			// adicionar o nick + nick + (String nick)
 			System.out.println("Removendo thread do cliente " + ID 
 					+ " na posição " + pos);
 			
